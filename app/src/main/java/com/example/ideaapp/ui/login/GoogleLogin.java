@@ -48,10 +48,10 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
 
         // Button listeners
         signIn = findViewById(R.id.sign_in_button);
-        noLogin = findViewById(R.id.no_login);
+
 
         signIn.setOnClickListener(this);
-        noLogin.setOnClickListener(this);
+
 
         // [START configure_signin]
         // Configure sign-in to request the user's ID, email address, and basic
@@ -168,7 +168,6 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
             mStatusTextView.setText(getString(R.string.signed_in_fmt, account.getDisplayName()));
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
 
             Intent intent = new Intent(com.example.ideaapp.ui.login.GoogleLogin.this, MainActivity.class);
             startActivity(intent);
@@ -176,7 +175,6 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
             mStatusTextView.setText(R.string.signed_out);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
         }
     }
 
@@ -186,9 +184,7 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
             case R.id.sign_in_button:
                 signIn();
                 break;
-            case R.id.no_login:
-                Intent intent = new Intent(com.example.ideaapp.ui.login.GoogleLogin.this, MainActivity.class);
-                startActivity(intent);
+
         }
     }
 

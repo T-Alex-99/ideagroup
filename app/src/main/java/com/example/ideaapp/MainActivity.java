@@ -1,10 +1,16 @@
 package com.example.ideaapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Toast;
 
+import com.example.ideaapp.ui.login.GoogleLogin;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -53,6 +59,22 @@ public class MainActivity extends AppCompatActivity {
         /**Google Login Token*/
         Log.v("TAG", "Key: " + " Value: ");
 
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if(acct == null) {
+            Intent intent = new Intent(MainActivity.this, GoogleLogin.class);
+            intent.putExtra("signout", "0");
+            startActivity(intent);
+        }
+
+        if (acct != null) {
+            String personName = acct.getDisplayName();
+            String personGivenName = acct.getGivenName();
+            Log.d("personGivenName", personGivenName);
+            System.out.println(personGivenName);
+            String personFamilyName = acct.getFamilyName();
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+        }
     }
 
     @Override
@@ -67,5 +89,27 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+                if(acct != null) {
+                    Intent intent = new Intent(MainActivity.this, GoogleLogin.class);
+                    intent.putExtra("signout", "0");
+                    startActivity(intent);
+                    return true;
+                } else {
+                    Toast.makeText(this,"Not logged in", Toast.LENGTH_LONG).show();
+                }
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 }
