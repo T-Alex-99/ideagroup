@@ -3,12 +3,16 @@ package com.example.ideaapp.ws;
 import android.util.Log;
 
 import com.example.ideaapp.model.Appuser;
+import com.example.ideaapp.model.IdeaGroup;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -37,7 +41,7 @@ public class InfrastructureWebservice {
     private String urlString;
 
     public Appuser getUser(int id) throws NoSuchRowException {
-        urlString = URL + "/appusers";
+        urlString = URL + "/appuser/member1";
         Log.e("test", urlString);
         Request request = new Request.Builder()
                 .url(urlString)
@@ -51,6 +55,7 @@ public class InfrastructureWebservice {
             Appuser user = null;
             if ((output = response.body().string()) != null) {
                 user = gson.fromJson(output, Appuser.class);
+                System.out.println(user.toString());
                 // zugegebene Vergewaltigung der JsonSyntaxException hinsichtlich
                 // NoSuchRowException ...
             }
@@ -63,7 +68,67 @@ public class InfrastructureWebservice {
         return null;
     }
 
+    public Collection<IdeaGroup> getGroupsByUserid(int id){
+        urlString = URL + "/ideagroup/byuserid/" + id;
+        Request request = new Request.Builder()
+                .url(urlString)
+                .build();
+        System.out.println(request.toString());
+        try {
+            Response response = client.newCall(request).execute();
+            String output;
+            IdeaGroup[] groups = null;
+            if ((output = response.body().string()) != null)
+                groups = gson.fromJson(output, IdeaGroup[].class);
+                System.out.println(groups.toString());
+            System.out.println("Testausgabe:");
+            for (IdeaGroup i : groups){
+                System.out.println(i.getGroupname());
+            }
+            Collection<IdeaGroup> ret = new ArrayList<IdeaGroup>();
+            for(int i = 0; i < groups.length; i++){
+                ret.add(groups[i]);
+            }
+            //Collection<IdeaGroup> allRooms = new ArrayList<IdeaGroup>();
 
+            return ret;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public IdeaGroup getGroupByName(String name) throws NoSuchRowException {
+        urlString = URL + "/ideagroup/Updategruppe4";
+        Log.e("test", urlString);
+        Request request = new Request.Builder()
+                .url(urlString)
+                .build();
+        System.out.println(request.toString());
+        try {
+            System.out.println("Jetzt im Try");
+            Response response = client.newCall(request).execute();
+            String output;
+            System.out.println("ideagroup");
+            IdeaGroup g = null;
+            if (((output = response.body().string())!= null)) {
+                System.out.println("Jetzt im if" + output);
+                g = gson.fromJson(output, IdeaGroup.class);
+                System.out.println("Jetzt nach gson" + g.toString());
+
+
+                // zugegebene Vergewaltigung der JsonSyntaxException hinsichtlich
+                // NoSuchRowException ...
+            }
+            return g;
+        } catch (IOException e) { // zu newCall(request).execute() und response.body().string();
+            e.printStackTrace();
+        } catch (com.google.gson.JsonSyntaxException e) {
+            throw new NoSuchRowException();
+        }
+        return null;
+    }
     /**
     public int getCountRooms() {
         urlString = URL + "/count";
