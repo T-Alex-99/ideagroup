@@ -19,7 +19,7 @@ public class MiniAdapter extends RecyclerView.Adapter<MiniAdapter.FirstViewHolde
 
         public FirstViewHolder(View v) {
             super(v);
-            textview = v.findViewById(R.id.tv_list);
+            textview = v.findViewById(R.id.groupname);
         }
 
         public void bind(final com.example.ideaapp.model.IdeaGroup group) {
