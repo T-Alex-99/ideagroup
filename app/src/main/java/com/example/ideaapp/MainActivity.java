@@ -2,13 +2,18 @@ package com.example.ideaapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Toast;
 
+import com.example.ideaapp.model.Appuser;
 import com.example.ideaapp.ui.login.GoogleLogin;
+import com.example.ideaapp.ws.IllegalCreateException;
+import com.example.ideaapp.ws.InfrastructureWebservice;
+import com.example.ideaapp.ws.NoSuchRowException;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -58,13 +63,16 @@ public class MainActivity extends AppCompatActivity {
 
         /**Google Login Token*/
         Log.v("TAG", "Key: " + " Value: ");
-
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
         if(acct == null) {
             Intent intent = new Intent(MainActivity.this, GoogleLogin.class);
             intent.putExtra("signout", "0");
             startActivity(intent);
         }
+
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         if (acct != null) {
             String personName = acct.getDisplayName();
@@ -74,6 +82,28 @@ public class MainActivity extends AppCompatActivity {
             String personFamilyName = acct.getFamilyName();
             String personEmail = acct.getEmail();
             String personId = acct.getId();
+
+            InfrastructureWebservice service = null;
+            Appuser appuser = null;
+
+            Log.v("APPUSER", "JETZT APPUSER ERSTELLEN" + personId);
+
+            service = new InfrastructureWebservice();
+            int userid = Integer.parseInt(personId.substring(0, 8));
+
+            try {
+                if (service.getUser(userid) == null) {
+                    try {
+                        Appuser user = new Appuser(userid, personGivenName, "initial", personEmail, null);
+                        if (user != null)
+                            service.createAppuser(user);
+                    } catch (IllegalCreateException e) {
+                        Log.v("APPUSER", "NICHT GEKLAPPT");
+                    }
+                }
+            } catch (NoSuchRowException e) {
+                e.printStackTrace();
+            }
         }
     }
 

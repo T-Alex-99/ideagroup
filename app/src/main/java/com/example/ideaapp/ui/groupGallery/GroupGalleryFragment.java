@@ -67,7 +67,7 @@ public class GroupGalleryFragment extends Fragment {
                         id = 1;
                         service = new InfrastructureWebservice();
                         try {
-                            Appuser user = service.getUser(242);
+                            Appuser user = service.getUser(2);
                             if (user != null)
                                 testText.setText(user.toString() + "booo");
                         } catch (NoSuchRowException e) {

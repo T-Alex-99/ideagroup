@@ -90,6 +90,7 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
 
         } else {
             updateUI(account);
+            System.out.println("UPDATERUI");
         }
 
         // [END on_start_sign_in]

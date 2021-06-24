@@ -37,7 +37,7 @@ public class InfrastructureWebservice {
     private String urlString;
 
     public Appuser getUser(int id) throws NoSuchRowException {
-        urlString = URL + "/appusers";
+        urlString = URL + "/appuser/member1";
         Log.e("test", urlString);
         Request request = new Request.Builder()
                 .url(urlString)
@@ -50,6 +50,7 @@ public class InfrastructureWebservice {
             String output;
             Appuser user = null;
             if ((output = response.body().string()) != null) {
+                System.out.println(output);
                 user = gson.fromJson(output, Appuser.class);
                 // zugegebene Vergewaltigung der JsonSyntaxException hinsichtlich
                 // NoSuchRowException ...
@@ -61,6 +62,27 @@ public class InfrastructureWebservice {
             throw new NoSuchRowException();
         }
         return null;
+    }
+
+    public void createAppuser(Appuser appuser) throws IllegalCreateException {
+        urlString = URL + "/appuser/save";
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                gson.toJson(appuser));
+        Request request = new Request.Builder()
+                .url(urlString)
+                .post(body)
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            String responseString = response.body().string();
+            if (responseString.compareTo("{\"status\":\"success\"}") != 0)
+                throw new IllegalCreateException();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
