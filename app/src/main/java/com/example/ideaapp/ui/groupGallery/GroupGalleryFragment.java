@@ -48,7 +48,7 @@ public class GroupGalleryFragment extends Fragment {
 
 
 
-
+    // Test aus android stuido
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         testText = view.findViewById(R.id.testText);
