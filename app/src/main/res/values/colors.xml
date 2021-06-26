@@ -7,6 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="orange">#FF9021</color>
+
     <color name="creme">#d1bc8a</color>
     <color name="sandgelb">#c6a664</color>
     <color name="blue">#2e4375</color>
@@ -18,4 +21,5 @@
     <color name="blue_grey_700">#455A64</color>
     <color name="blue_grey_800">#37474F</color>
     <color name="blue_grey_900">#263238</color>
+
 </resources>
