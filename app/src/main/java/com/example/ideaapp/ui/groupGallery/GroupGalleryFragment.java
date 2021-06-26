@@ -1,5 +1,6 @@
 package com.example.ideaapp.ui.groupGallery;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,6 +24,9 @@ import com.example.ideaapp.MiniAdapter;
 import com.example.ideaapp.R;
 import com.example.ideaapp.model.Appuser;
 import com.example.ideaapp.model.IdeaGroup;
+import com.example.ideaapp.ui.home.HomeFragment;
+import com.example.ideaapp.ui.ideagroup.IdeaGroupExp;
+import com.example.ideaapp.ui.ideagroup.PlaceholderFragment;
 import com.example.ideaapp.ws.InfrastructureWebservice;
 import com.example.ideaapp.ws.NoSuchRowException;
 
@@ -31,83 +36,62 @@ import java.util.Collection;
 public class GroupGalleryFragment extends Fragment {
 
     private GroupGalleryViewModel galleryViewModel;
-    private TextView testText;
-    private Button testRest;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutRv;
     private ArrayList<IdeaGroup> content;
     private MiniAdapter adapter;
+    private InfrastructureWebservice service;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         galleryViewModel =
                 new ViewModelProvider(this).get(GroupGalleryViewModel.class);
         View root = inflater.inflate(R.layout.fragment_group_gallery, container, false);
-        final TextView textView = root.findViewById(R.id.textGallery);
+        //final TextView textView = root.findViewById(R.id.textGallery);
+        recyclerView = root.findViewById(R.id.rec_view);
+        layoutRv = new LinearLayoutManager(this.getActivity());
+        recyclerView.setLayoutManager(layoutRv);
 
-
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        content = new ArrayList<IdeaGroup>();
+        content = new ArrayList<IdeaGroup>();
+        adapter = new MiniAdapter(content);
+        recyclerView.setAdapter(adapter);
+        service = new InfrastructureWebservice();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         return root;
     }
 
-
-
-    // Test aus android stuido
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        testText = view.findViewById(R.id.testText);
-        testRest = view.findViewById(R.id.testButton);
+        ArrayList<IdeaGroup> g = (ArrayList<IdeaGroup>) service.getGroupsByUserid(11402);
 
-        recyclerView = view.findViewById(R.id.rec_view);
-        layoutRv = new LinearLayoutManager(this.getActivity());
-        recyclerView.setLayoutManager(layoutRv);
+        if (g != null) {
+            content.addAll(g);
+            adapter = new MiniAdapter(content);
+            recyclerView.setAdapter(adapter);
+        }
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(this.getContext(), recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        System.out.println("Test" + content.get(position).getGroupname());
+                        //FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        Intent intent = new Intent(getActivity(), IdeaGroupExp.class);
+                        startActivity(intent);
+                        intent.putExtra("Gruppe", content.get(position));
+                        System.out.println(content.get(position));
 
-        content = new ArrayList<IdeaGroup>();
-        adapter = new MiniAdapter(content);
-        //content.add(new IdeaGroup("test","test"));
-        recyclerView.setAdapter(adapter);
+                        //ft.replace(R.id.nav_host_fragment, new HomeFragment());
+                        //ft.commit();
 
+                    }
 
-        testRest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InfrastructureWebservice service = null;
-                String s = "";
-                long id;
-                String result;
-                Appuser appuser = null;
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                }));
 
-                        Log.println(1,"d","JETZT IN CASE DRIN");
-                        id = 1;
-                        service = new InfrastructureWebservice();
-
-                //Appuser user = service.getUser(242);
-                //System.out.println("jjbfojbwfbwefbjobf" + user.toString());
-                //System.out.println(user == null);
-                ArrayList<IdeaGroup> g = (ArrayList<IdeaGroup>) service.getGroupsByUserid(11402);
-                //IdeaGroup g = service.getGroupByName("Updategruppe4");
-                //System.out.println(g == null);
-                if (g != null) {
-                    //System.out.println("jjbfojbwfbwefbjobf" + user.toString());
-                    testText.setText(g.toString() + "booo");
-
-                    //testText.setText(g.toString());
-                    //content.add(new IdeaGroup("test", "test"));
-                    //content.add(g);
-                    content.addAll(g);
-                    adapter = new MiniAdapter(content);
-                    recyclerView.setAdapter(adapter);
-                }
-
-            }
-        });
     }
 }

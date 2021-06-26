@@ -11,7 +11,8 @@
         android:id="@+id/clayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/teal_700"
+        android:background="@color/orange"
+        android:clickable="true"
         >
         <TextView
             android:id="@+id/groupname"
@@ -20,6 +21,7 @@
             android:textSize="20sp"
             android:textColor="@color/black"
             android:text="Groupname"
+            android:textStyle="bold"
             android:layout_alignParentLeft="true"
             app:layout_constraintStart_toStartOf="@id/clayout"
             app:layout_constraintTop_toTopOf="@id/clayout"
