@@ -54,7 +54,6 @@ public class GroupGalleryFragment extends Fragment {
         recyclerView.setLayoutManager(layoutRv);
 
         content = new ArrayList<IdeaGroup>();
-        content = new ArrayList<IdeaGroup>();
         adapter = new MiniAdapter(content);
         recyclerView.setAdapter(adapter);
         service = new InfrastructureWebservice();
@@ -93,32 +92,6 @@ public class GroupGalleryFragment extends Fragment {
                         // do whatever
                     }
                 }));
-
-        testText = view.findViewById(R.id.testText);
-        testRest = view.findViewById(R.id.testButton);
-
-        testRest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InfrastructureWebservice service = null;
-                String s = "";
-                long id;
-                String result;
-                Appuser appuser = null;
-
-                        Log.println(1,"d","JETZT IN CASE DRIN");
-                        id = 1;
-                        service = new InfrastructureWebservice();
-                        try {
-                            Appuser user = service.getUser(2);
-                            if (user != null)
-                                testText.setText(user.toString() + "booo");
-                        } catch (NoSuchRowException e) {
-                            testText.setText("Kein Raum gefunden!");
-                        }
-
-            }
-        });
 
     }
 }
