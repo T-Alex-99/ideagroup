@@ -1,9 +1,11 @@
 package com.example.ideaapp.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,13 +15,14 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ideaapp.R;
+import com.example.ideaapp.ui.newIdeaGroup.NewIdeaGroup;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-
+    private Button newGroup;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -34,6 +37,23 @@ public class HomeFragment extends Fragment {
                 textView.setText("Welcome "+ "acct.getDisplayName()");
             }
         });
+
+
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        newGroup = view.findViewById(R.id.add_group);
+        newGroup.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NewIdeaGroup.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 }
