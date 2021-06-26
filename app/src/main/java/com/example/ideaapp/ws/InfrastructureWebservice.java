@@ -54,6 +54,7 @@ public class InfrastructureWebservice {
             String output;
             Appuser user = null;
             if ((output = response.body().string()) != null) {
+                System.out.println(output);
                 user = gson.fromJson(output, Appuser.class);
                 System.out.println(user.toString());
                 // zugegebene Vergewaltigung der JsonSyntaxException hinsichtlich
@@ -67,6 +68,7 @@ public class InfrastructureWebservice {
         }
         return null;
     }
+
 
     public Collection<IdeaGroup> getGroupsByUserid(int id){
         urlString = URL + "/ideagroup/byuserid/" + id;
@@ -116,6 +118,29 @@ public class InfrastructureWebservice {
                 System.out.println("Jetzt im if" + output);
                 g = gson.fromJson(output, IdeaGroup.class);
                 System.out.println("Jetzt nach gson" + g.toString());
+              
+    public void createAppuser(Appuser appuser) throws IllegalCreateException {
+        urlString = URL + "/appuser/save";
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                gson.toJson(appuser));
+        Request request = new Request.Builder()
+                .url(urlString)
+                .post(body)
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            String responseString = response.body().string();
+            if (responseString.compareTo("{\"status\":\"success\"}") != 0)
+                throw new IllegalCreateException();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 
                 // zugegebene Vergewaltigung der JsonSyntaxException hinsichtlich

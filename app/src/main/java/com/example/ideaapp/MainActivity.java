@@ -1,9 +1,21 @@
 package com.example.ideaapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Toast;
 
+import com.example.ideaapp.model.Appuser;
+import com.example.ideaapp.ui.login.GoogleLogin;
+import com.example.ideaapp.ws.IllegalCreateException;
+import com.example.ideaapp.ws.InfrastructureWebservice;
+import com.example.ideaapp.ws.NoSuchRowException;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -19,6 +31,9 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    //Google Login
+    private long lastSignInSave = System.currentTimeMillis()-60000;
+    private static String googleToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +60,51 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        /**Google Login Token*/
+        Log.v("TAG", "Key: " + " Value: ");
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if(acct == null) {
+            Intent intent = new Intent(MainActivity.this, GoogleLogin.class);
+            intent.putExtra("signout", "0");
+            startActivity(intent);
+        }
+
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        if (acct != null) {
+            String personName = acct.getDisplayName();
+            String personGivenName = acct.getGivenName();
+            Log.d("personGivenName", personGivenName);
+            System.out.println(personGivenName);
+            String personFamilyName = acct.getFamilyName();
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+
+            InfrastructureWebservice service = null;
+            Appuser appuser = null;
+
+            Log.v("APPUSER", "JETZT APPUSER ERSTELLEN" + personId);
+
+            service = new InfrastructureWebservice();
+            int userid = Integer.parseInt(personId.substring(0, 8));
+
+            try {
+                if (service.getUser(userid) == null) {
+                    try {
+                        Appuser user = new Appuser(userid, personGivenName, "initial", personEmail, null);
+                        if (user != null)
+                            service.createAppuser(user);
+                    } catch (IllegalCreateException e) {
+                        Log.v("APPUSER", "NICHT GEKLAPPT");
+                    }
+                }
+            } catch (NoSuchRowException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -59,5 +119,27 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+                if(acct != null) {
+                    Intent intent = new Intent(MainActivity.this, GoogleLogin.class);
+                    intent.putExtra("signout", "0");
+                    startActivity(intent);
+                    return true;
+                } else {
+                    Toast.makeText(this,"Not logged in", Toast.LENGTH_LONG).show();
+                }
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 }

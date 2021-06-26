@@ -66,6 +66,7 @@ public class GroupGalleryFragment extends Fragment {
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         ArrayList<IdeaGroup> g = (ArrayList<IdeaGroup>) service.getGroupsByUserid(11402);
 
         if (g != null) {
@@ -92,6 +93,32 @@ public class GroupGalleryFragment extends Fragment {
                         // do whatever
                     }
                 }));
+
+        testText = view.findViewById(R.id.testText);
+        testRest = view.findViewById(R.id.testButton);
+
+        testRest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfrastructureWebservice service = null;
+                String s = "";
+                long id;
+                String result;
+                Appuser appuser = null;
+
+                        Log.println(1,"d","JETZT IN CASE DRIN");
+                        id = 1;
+                        service = new InfrastructureWebservice();
+                        try {
+                            Appuser user = service.getUser(2);
+                            if (user != null)
+                                testText.setText(user.toString() + "booo");
+                        } catch (NoSuchRowException e) {
+                            testText.setText("Kein Raum gefunden!");
+                        }
+
+            }
+        });
 
     }
 }
