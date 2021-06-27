@@ -30,12 +30,19 @@ public class IdeaGroup implements Serializable {
 //	private Set<GroupMember> groupmemberCollection = new HashSet<GroupMember>(); // !!Von Collection zu Set ge�ndert
 																					// wegen muktipleBag Exception !!
 
-	private Set<IdeaCategory> ideacategoryCollection = new HashSet<IdeaCategory>(); // !!Von Collection zu Set ge�ndert wegen muktipleBag Exception !!
+	private Collection<IdeaCategory> ideacategoryCollection = new ArrayList<IdeaCategory>(); // !!Von Collection zu Set ge�ndert wegen muktipleBag Exception !!
 	
 	
 
 	public IdeaGroup() {
 	}
+
+	public IdeaGroup(String groupname, String groupdescr) {
+		this.groupname = groupname;
+		this.groupdescr = groupdescr;
+		this.createLocalDate = LocalDate.now().toString();
+	}
+
 
 	public IdeaGroup( int groupid,
 					 String groupname, String groupdescr, String createLocalDate, Appuser owner) {
@@ -71,7 +78,7 @@ public class IdeaGroup implements Serializable {
 		return groupowner;
 	}
 
-	public void setIdeagroupCollection(Set<IdeaCategory> ideacategoryCollection) {
+	public void setIdeagroupCollection(Collection<IdeaCategory> ideacategoryCollection) {
 		this.ideacategoryCollection = ideacategoryCollection;
 	}
 	
@@ -79,7 +86,7 @@ public class IdeaGroup implements Serializable {
 	
 	public void addIdeaCategory(IdeaCategory ideaCategory) {
 		if (ideacategoryCollection == null)
-			this.ideacategoryCollection = new HashSet<IdeaCategory>();
+			this.ideacategoryCollection = new ArrayList<IdeaCategory>();
 		ideacategoryCollection.add(ideaCategory);
 		ideaCategory.setIdeagroup(this);
 	}

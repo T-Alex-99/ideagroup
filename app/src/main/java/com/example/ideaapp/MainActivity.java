@@ -92,17 +92,18 @@ public class MainActivity extends AppCompatActivity {
             int userid = Integer.parseInt(personId.substring(0, 8));
 
             try {
-                if (service.getUser(userid) == null) {
-                    try {
-                        Appuser user = new Appuser(userid, personGivenName, "initial", personEmail, null);
-                        if (user != null)
-                            service.createAppuser(user);
-                    } catch (IllegalCreateException e) {
-                        Log.v("APPUSER", "NICHT GEKLAPPT");
-                    }
+                Appuser temp = service.getUserByEmail(personEmail);
+                if (temp== null) {
+
                 }
             } catch (NoSuchRowException e) {
-                e.printStackTrace();
+                try {
+                    Appuser user = new Appuser(userid, personGivenName, "initial", personEmail, null);
+                    if (user != null)
+                        service.createAppuser(user);
+                } catch (IllegalCreateException x) {
+                    Log.v("APPUSER", "NICHT GEKLAPPT");
+                }
             }
         }
     }

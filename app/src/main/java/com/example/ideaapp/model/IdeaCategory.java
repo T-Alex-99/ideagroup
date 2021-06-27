@@ -15,7 +15,7 @@ public class IdeaCategory implements Serializable {
 
     private String categoryTitle;
 
-    private LocalDate created;
+    private String created;
     
 //    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "categoryid") // commentIdcategoryid
 //    private Collection<Comments> commentsCollection;
@@ -29,12 +29,12 @@ public class IdeaCategory implements Serializable {
 
     public IdeaCategory(String categorytitle) {
         this.categoryTitle = categorytitle;
-        this.created = LocalDate.now();
+        this.created = LocalDate.now().toString();
     }
     
     public IdeaCategory(String categorytitle, IdeaGroup ideagroup) {
     	this.categoryTitle = categorytitle;
-        this.created = LocalDate.now();
+        this.created = LocalDate.now().toString();
         this.ideagroup = ideagroup;
     }
     
@@ -71,11 +71,11 @@ public class IdeaCategory implements Serializable {
         this.categoryTitle = categorytitle;
     }
 
-    public LocalDate getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDate created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 

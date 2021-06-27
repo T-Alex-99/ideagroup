@@ -1,4 +1,4 @@
-package com.example.ideaapp.ui.accountInfo;
+package com.example.ideaapp.ui.ideagroup;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;

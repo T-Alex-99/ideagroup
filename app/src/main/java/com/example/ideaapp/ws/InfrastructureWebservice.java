@@ -4,6 +4,7 @@ import android.util.Log;
 
 
 import com.example.ideaapp.model.Appuser;
+import com.example.ideaapp.model.IdeaCategory;
 import com.example.ideaapp.model.IdeaGroup;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -59,8 +60,8 @@ public class InfrastructureWebservice {
 
 
 
-    public Appuser getUser(int id) throws NoSuchRowException {
-        urlString = URL + "/appuser/member1";
+    public Appuser getUserByEmail(String email) throws NoSuchRowException {
+        urlString = URL + "/appuser/" + email;
         Log.e("test", urlString);
         Request request = new Request.Builder()
                 .url(urlString)
@@ -108,7 +109,7 @@ public class InfrastructureWebservice {
         }
     }
 
-    public Collection<IdeaGroup> getGroupsByUserid(int id){
+    public Collection<IdeaGroup> getGroupsByUserid(int id) {
         urlString = URL + "/ideagroup/byuserid/" + id;
         Request request = new Request.Builder()
                 .url(urlString)
@@ -122,31 +123,23 @@ public class InfrastructureWebservice {
                 groups = gson.fromJson(output, IdeaGroup[].class);
             System.out.println(groups.toString());
             System.out.println("Testausgabe:");
-            for (IdeaGroup i : groups){
+            for (IdeaGroup i : groups) {
                 System.out.println(i.getGroupname());
             }
             Collection<IdeaGroup> ret = new ArrayList<IdeaGroup>();
-            for(int i = 0; i < groups.length; i++){
+            for (int i = 0; i < groups.length; i++) {
                 ret.add(groups[i]);
             }
 //Collection<IdeaGroup> allRooms = new ArrayList<IdeaGroup>();
-
-
-
             return ret;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
-
-
-
     }
 
-
-
     public IdeaGroup getGroupByName(String name) throws NoSuchRowException {
-        urlString = URL + "/ideagroup/Updategruppe4";
+        urlString = URL + "/ideagroup/" + name;
         Log.e("test", urlString);
         Request request = new Request.Builder()
                 .url(urlString)
@@ -162,15 +155,7 @@ public class InfrastructureWebservice {
                 System.out.println("Jetzt im if" + output);
                 g = gson.fromJson(output, IdeaGroup.class);
                 System.out.println("Jetzt nach gson" + g.toString());
-
-
-
-
-
-
-
-
-                // zugegebene Vergewaltigung der JsonSyntaxException hinsichtlich
+          // zugegebene Vergewaltigung der JsonSyntaxException hinsichtlich
                 // NoSuchRowException ...
             }
             return g;
@@ -180,6 +165,68 @@ public class InfrastructureWebservice {
             throw new NoSuchRowException();
         }
         return null;
+    }
+
+    public void createIdeaGroup(IdeaGroup ideaGroup, String ownerEmail) throws IllegalCreateException {
+        urlString = URL + "/ideagroup/newgroup/" + ownerEmail;
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                gson.toJson(ideaGroup));
+        Request request = new Request.Builder()
+                .url(urlString)
+                .post(body)
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            String responseString = response.body().string();
+            if (responseString.compareTo("{\"status\":\"success\"}") != 0)
+                throw new IllegalCreateException();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createGroupMember(String groupName, String ownerEmail) throws IllegalCreateException {
+        urlString = URL + "/groupmember/save/" + groupName + "/" + ownerEmail;
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                gson.toJson(""));
+        Request request = new Request.Builder()
+                .url(urlString)
+                .post(body)
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            String responseString = response.body().string();
+            if (responseString.compareTo("{\"status\":\"success\"}") != 0)
+                throw new IllegalCreateException();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void createIdeaCategory(String groupName, String ideaCategory) throws IllegalCreateException {
+        urlString = URL + "/ideacategory/newToGroup/" + groupName + "/" + ideaCategory;
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                gson.toJson(""));
+        Request request = new Request.Builder()
+                .url(urlString)
+                .post(body)
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            String responseString = response.body().string();
+            if (responseString.compareTo("{\"status\":\"success\"}") != 0)
+                throw new IllegalCreateException();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     /**
     public int getCountRooms() {

@@ -12,14 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IdeaApp"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".ui.newIdeaGroup.NewIdeaGroup">
-
+        <activity android:name=".ui.newCategories.NewCategories"></activity>
+        <activity android:name=".ui.newIdeaGroup.NewIdeaGroup">
             android:theme="@style/Theme.IdeaApp.NoActionBar"
         </activity>
         <activity
             android:name=".ui.login.GoogleLogin"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".ui.ideagroup.IdeaGroupExp"
             android:label="@string/title_activity_main"
